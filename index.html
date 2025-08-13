@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Weather App</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #74ebd5, #acb6e5);
+      color: #333;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .weather-container {
+      background: #ffffffcc;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+      text-align: center;
+      width: 300px;
+    }
+
+    .weather-container h2 {
+      margin-bottom: 20px;
+      color: #0077b6;
+    }
+
+    .input-group {
+      margin-bottom: 20px;
+    }
+
+    input[type="text"] {
+      padding: 10px;
+      width: 80%;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+    }
+
+    button {
+      padding: 10px 20px;
+      background-color: #00b4d8;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    .weather-info {
+      margin-top: 20px;
+      font-size: 16px;
+    }
+
+    .weather-icon {
+      width: 64px;
+      height: 64px;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="weather-container">
+    <h2>Weather App 🌤️</h2>
+    <div class="input-group">
+      <input type="text" id="cityInput" placeholder="Enter city name">
+      <button onclick="getWeather()">Get Weather</button>
+    </div>
+    <div class="weather-info" id="weatherInfo"></div>
+  </div>
+
+  <script>
+    async function getWeather() {
+      const city = document.getElementById("cityInput").value;
+      const apiKey = "bb8615d397694808a2e153427250807";
+      const url = `https://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${city}&aqi=yes`;
+
+      try {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error("City not found");
+        const data = await response.json();
+
+        const infoHTML = `
+          <h3>${data.location.name}, ${data.location.country}</h3>
+          <img class="weather-icon" src="https:${data.current.condition.icon}" alt="Weather icon">
+          <p><strong>Condition:</strong> ${data.current.condition.text}</p>
+          <p><strong>Temperature:</strong> ${data.current.temp_c} °C</p>
+          <p><strong>Humidity:</strong> ${data.current.humidity}%</p>
+          <p><strong>Wind:</strong> ${data.current.wind_kph} kph</p>
+        `;
+
+        document.getElementById("weatherInfo").innerHTML = infoHTML;
+      } catch (error) {
+        document.getElementById("weatherInfo").innerHTML = `<p style="color:red;">❌ ${error.message}</p>`;
+      }
+    }
+  </script>
+</body>
+</html>
+
+
